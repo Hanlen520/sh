@@ -1,7 +1,7 @@
 #!/bin/bash
 #参数1项目名：cms / qc / wx
 jobname=$1
-#参数2端口号：8081 / 8082
+#参数2端口号：8081 / 8082 / 8083
 portnum=$2
 #参数3分支：alpha / beta
 whichone=$3
