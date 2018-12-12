@@ -41,12 +41,17 @@ file_manage(){
 #杀死进程
 kill_job(){
 	# 检查端口号是否存在，存在则杀死
-	echo "4.杀死${portnum}进程"$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
-	while [ -n "$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')" ]
-	do
-		kill -9 $(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
-	done
-	sleep 10
+	echo "4.检查端口号${portnum}是否被占用，已占用则杀死进程"
+	if [ $(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }') ]; then
+		echo "5.准备杀死${portnum}端口进程$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')"
+		while [ $(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }') ]
+		do
+			kill -9 $(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
+			sleep 10
+		done
+	else
+		echo "5.${portnum}端口未占用，进程$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')不存在"
+	fi
 }
 
 # 启动进程
