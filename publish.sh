@@ -25,6 +25,8 @@ error_info(){
 file_manage(){
 	date_str=$(date +%Y%m%d-%H%M%S) && 
 	
+	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n已接收jenkins远程传输包$(stat /website/jenkins/${jobname}/*.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+	
 	mv /website/${whichone}/${jobname}/${jobname}.jar /website/backup/${jobname}/${date_str}.jar &&
 	echo "1.旧版备份，成功：/website/backup/${jobname}/${date_str}.jar"
 	
@@ -34,6 +36,8 @@ file_manage(){
 	
 	cp /website/jenkins/${jobname}/*.jar /website/${whichone}/${jobname}/${jobname}.jar && 
 	echo "3.新版覆盖，成功：/website/${whichone}/${jobname}/${jobname}.jar"
+	
+	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n更新包信息:\n$(stat /website/$whichone/$jobname/$jobname.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
 	
 	sleep 1
 }
