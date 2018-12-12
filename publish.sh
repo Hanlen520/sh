@@ -92,14 +92,14 @@ check_job(){
 		job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
 		job_etime_array=(${job_etime//:/ })
 		echo "持续时间${job_etime}"
-		if [ ${job_etime_array[2]} ] || [ ${job_etime_array[0]} -ge 2 ];then
+		if [ ${job_etime_array[2]} ] || [ ${job_etime_array[0]} -gt 3 ];then
 			echo "旧版本进程没有杀死，重试"
 			kill_job
 			run_job
 			check_job
 		fi
 		
-		if [ -z ${job_etime_array[2]} ] && [ ${job_etime_array[0]} -le 1 ];then
+		if [ -z ${job_etime_array[2]} ] && [ ${job_etime_array[0]} -le 3 ];then
 			echo "检测完成，启动正确!"
 		fi
 		
