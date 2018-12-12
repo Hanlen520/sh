@@ -42,8 +42,10 @@ file_manage(){
 kill_job(){
 	# 检查端口号是否存在，存在则杀死
 	echo "4.检查端口号${portnum}是否被占用，已占用则杀死进程"
-	if [ $(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }') ]; then
-		echo "5.准备杀死${portnum}端口进程$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')"
+	job_pid=$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
+	if [ -n "$job_pid" ]; then
+		job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
+		echo "5.端口${portnum}已占用，所在进程${job_pid}已持续运行{job_etime}，准备杀死"
 		while [ $(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }') ]
 		do
 			kill -9 $(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
@@ -58,19 +60,19 @@ kill_job(){
 run_job(){
 	case $jobname in
 	'cms')
-		echo "5.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
+		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
 		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum > /website/$whichone/$jobname/logs/nohup-out-$date_str.log 2>&1 &
 		sleep 120
 	;;
 	'qc')
-		echo "5.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
+		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
 		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/logs/nohup-out-$date_str.log 2>&1 &
 		sleep 120
 	;;
 	'wx')
-		echo "5.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
+		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
 		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/logs/nohup-out-$date_str.log 2>&1 &
 		sleep 120
@@ -83,7 +85,7 @@ run_job(){
 
 # 状态复查
 check_job(){
-	echo "6.准备检测"
+	echo "7.准备检测"
 	job_pid=$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
 	if [ -n "$job_pid" ];then
 		echo "PID是${job_pid}"
