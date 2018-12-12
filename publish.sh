@@ -45,7 +45,7 @@ kill_job(){
 	job_pid=$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
 	if [ -n "$job_pid" ]; then
 		job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
-		echo "5.端口${portnum}已占用，所在进程${job_pid}已持续运行{job_etime}，准备杀死"
+		echo "5.端口${portnum}已占用，所在进程${job_pid}已持续运行${job_etime}，准备杀死"
 		while [ $(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }') ]
 		do
 			kill -9 $(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
