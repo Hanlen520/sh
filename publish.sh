@@ -71,7 +71,7 @@ run_job(){
 	'cms')
 		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum > /website/$whichone/$jobname/logs/nohup-out-$date_str.log 2>&1 &
+		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/logs/nohup-out-$date_str.log 2>&1 &
 		sleep 120
 	;;
 	'cloud')
