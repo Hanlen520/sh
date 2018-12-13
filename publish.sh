@@ -25,6 +25,10 @@ error_info(){
 file_manage(){
 	date_str=$(date +%Y%m%d-%H%M%S) && 
 	
+	#目录初始化，已存在则忽略，不存在则创建
+	mkdir -p /website/${whichone}/${jobname}/logs
+	mkdir -p /website/backup/${jobname}
+	
 	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n已接收jenkins远程传输包$(stat /website/jenkins/${jobname}/*.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
 	
 	mv /website/${whichone}/${jobname}/${jobname}.jar /website/backup/${jobname}/${date_str}.jar &&
