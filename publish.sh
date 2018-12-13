@@ -40,6 +40,7 @@ file_manage(){
 	
 	cp /website/jenkins/${jobname}/*.jar /website/${whichone}/${jobname}/${jobname}.jar && 
 	echo "3.新版覆盖，成功：/website/${whichone}/${jobname}/${jobname}.jar"
+	rm -rf /website/jenkins/${jobname}/*.jar
 	
 	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n更新包信息:\n$(stat /website/$whichone/$jobname/$jobname.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
 	
