@@ -1,7 +1,7 @@
 #!/bin/bash
-#参数1项目名：cms / qc / wx / cloud
+#参数1项目名：cms / qc / wx / cloud / config /api
 jobname=$1
-#参数2端口号：8500 / 8081 / 8600 / 8700
+#参数2端口号：8500 / 8081 / 8600 / 8700 / 8888 / 8650
 portnum=$2
 #参数3分支：alpha / beta
 whichone=$3
@@ -70,12 +70,6 @@ run_job(){
 		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
 		sleep 120
 	;;
-	'cloud')
-		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
-		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
-		sleep 120
-	;;
 	'qc')
 		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
@@ -86,6 +80,24 @@ run_job(){
 		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
 		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
+		sleep 120
+	;;
+	'cloud')
+		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
+		date_str=$(date +%Y%m%d-%H%M%S)
+		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
+		sleep 120
+	;;
+	'config')
+		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
+		date_str=$(date +%Y%m%d-%H%M%S)
+		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
+		sleep 120
+	;;
+	'api')
+		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
+		date_str=$(date +%Y%m%d-%H%M%S)
+		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
 		sleep 120
 	;;
 	*)
@@ -130,14 +142,6 @@ cms(){
 	check_job
 	success_info
 }
-# cloud注册中心
-cloud(){
-  file_manage
-	kill_job
-	run_job
-	check_job
-	success_info
-}
 # qc服务
 qc(){
   file_manage
@@ -154,6 +158,30 @@ wx(){
 	check_job
 	success_info
 }
+# cloud注册中心
+cloud(){
+  file_manage
+	kill_job
+	run_job
+	check_job
+	success_info
+}
+# cloud注册中心
+config(){
+	file_manage
+	kill_job
+	run_job
+	check_job
+	success_info
+}
+# cloud注册中心
+api(){
+	file_manage
+	kill_job
+	run_job
+	check_job
+	success_info
+}
 
 #从这里开始
 job_start(){
@@ -162,14 +190,20 @@ job_start(){
 	'cms')
 		cms
 	;;
-	'cloud')
-		cloud
-	;;
 	'qc')
 		qc
 	;;
 	'wx')
 		wx
+	;;
+	'cloud')
+		cloud
+	;;
+	'config')
+		config
+	;;
+	'api')
+		api
 	;;
 	*)
 		error_info
