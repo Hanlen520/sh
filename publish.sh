@@ -85,21 +85,21 @@ run_job(){
 		echo "nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &"
 		sleep 120
 	;;
-	'cloud')
+	'cloud-1'|'cloud-2')
 		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
 		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
 		echo "nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &"
 		sleep 120
 	;;
-	'config')
+	'config-1'|'config-2')
 		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
 		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
 		echo "nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &"
 		sleep 120
 	;;
-	'api')
+	'api-1'|'api-2')
 		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
 		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
@@ -202,13 +202,13 @@ job_start(){
 	'wx')
 		wx
 	;;
-	'cloud')
+	'cloud-1'|'cloud-2')
 		cloud
 	;;
-	'config')
+	'config-1'|'config-2')
 		config
 	;;
-	'api')
+	'api-1'|'api-2')
 		api
 	;;
 	*)
