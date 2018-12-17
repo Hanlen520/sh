@@ -1,5 +1,5 @@
 #!/bin/bash
-#参数1项目名：cms / qc / wx / cloud / config /api
+#参数1项目名：cms / qc / wx / cloud-1/2 / config-1/2 /api-1/2
 jobname=$1
 #参数2端口号：8500 / 8081 / 8600 / 8700 / 8888 / 8650
 portnum=$2
