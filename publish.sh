@@ -54,8 +54,9 @@ kill_job(){
 		while [ $(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }') ]
 		do
 			kill -9 $(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
-			sleep 10
+			sleep 3
 		done
+		kill -9 $job_pid
 	else
 		echo "5.${portnum}端口未占用，进程$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')不存在"
 	fi
