@@ -139,7 +139,16 @@ check_job(){
 	fi
 	
 }
-
+cmsweb(){
+# cms前端静态文件替换
+	date_str=$(date +%Y%m%d-%H%M%S) && 
+	echo -e "当前时间：`date` \n${date_str}\n1.接收构建包:\n$(stat /website/jenkins/cmsweb/dist.tar.gz)"
+	echo -e "2.更新包信息：\n$(stat /website/${whichone}/cmsweb/dist.tar.gz)"
+	mv /website/${whichone}/cmsweb/dist /website/backup/cmsweb/dist-${date_str}
+	echo -e "3.备份旧版本信息：\n/website/backup/cmsweb/dist-${date_str}\n$(ll /website/backup/cmsweb/dist-${date_str})"
+	tar xzvf /website/jenkins/cmsweb/dist.tar.gz -C /website/${whichone}/cmsweb/
+	echo -e "4.解压上线新版静态文件\n/website/${whichone}/cmsweb/dist：\n$(ll /website/${whichone}/cmsweb/dist)"
+}
 # cms后台
 cms(){
     file_manage
@@ -150,7 +159,7 @@ cms(){
 }
 # qc服务
 qc(){
-  file_manage
+	file_manage
 	kill_job
 	run_job
 	check_job
@@ -166,7 +175,7 @@ wx(){
 }
 # cloud注册中心
 cloud(){
-  file_manage
+	file_manage
 	kill_job
 	run_job
 	check_job
@@ -193,6 +202,9 @@ api(){
 job_start(){
 	printf "项目：${jobname}，端口：${portnum} \n"
 	case $jobname in
+	'cmsweb')
+		cmsweb
+	;;
 	'cms')
 		cms
 	;;
