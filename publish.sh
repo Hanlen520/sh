@@ -32,7 +32,7 @@ file_manage(){
 	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n已接收jenkins远程传输包：\n$(stat /website/jenkins/${jobname}/*.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
 	
 	mv /website/${whichone}/${jobname}/* /website/backup/${jobname}/${date_str}/ &&
-	echo "1.旧版jar及日志备份，成功：`ll /website/backup/${jobname}/${date_str}/*`"
+	echo "1.旧版jar及日志备份，成功：`ls -l /website/backup/${jobname}/${date_str}/*`"
 	
 	cp /website/jenkins/${jobname}/*.jar /website/${whichone}/${jobname}/${jobname}.jar && 
 	echo "2.替换新版jar包，成功：/website/${whichone}/${jobname}/${jobname}.jar"
@@ -145,9 +145,9 @@ cmsweb(){
 	echo -e "当前时间：`date` \n${date_str}\n1.接收构建包:\n$(stat /website/jenkins/cmsweb/dist.tar.gz)"
 	echo -e "2.更新包信息：\n$(stat /website/jenkins/cmsweb/dist.tar.gz)"
 	mv /website/${whichone}/cmsweb/dist /website/backup/cmsweb/dist-${date_str}
-	echo -e "3.备份旧版本信息：\n/website/backup/cmsweb/dist-${date_str}\n$(ll /website/backup/cmsweb/dist-${date_str})"
+	echo -e "3.备份旧版本信息：\n/website/backup/cmsweb/dist-${date_str}\n$(ls -l /website/backup/cmsweb/dist-${date_str})"
 	tar xzvf /website/jenkins/cmsweb/dist.tar.gz -C /website/${whichone}/cmsweb/
-	echo -e "4.解压上线新版静态文件\n/website/${whichone}/cmsweb/dist：\n$(ll /website/${whichone}/cmsweb/dist)"
+	echo -e "4.解压上线新版静态文件\n/website/${whichone}/cmsweb/dist：\n$(ls -l /website/${whichone}/cmsweb/dist)"
 }
 # cms后台
 cms(){
