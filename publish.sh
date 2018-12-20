@@ -33,7 +33,7 @@ file_manage(){
 	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n已接收jenkins远程传输包：\n$(stat /website/jenkins/${jobname}/*.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
 	
 	mv /website/${whichone}/${jobname}/* /website/backup/${jobname}/${date_str}/ &&
-	echo "1.旧版jar及日志备份，成功：\n`ls -l /website/backup/${jobname}/${date_str}/*`"
+	echo -e "1.旧版jar及日志备份，成功：\n`ls -l /website/backup/${jobname}/${date_str}/*`"
 	
 	cp /website/jenkins/${jobname}/*.jar /website/${whichone}/${jobname}/${jobname}.jar && 
 	echo "2.替换新版jar包，成功：/website/${whichone}/${jobname}/${jobname}.jar"
