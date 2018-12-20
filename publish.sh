@@ -10,13 +10,14 @@ active=$4
 
 #成功信息
 success_info(){
-	echo "${jobname}更新成功"
+	echo "${jobname}更新成功!!!!!!!!!!!!!"
 	printf "%-16s %-16s %-16s %-16s %-16s\n" 项目 端口 CASE 日期 时间
 	printf "%-16s %-16s %-16s %-16s %-16s\n" $jobname $portnum $whichone `date '+%Y-%m-%d %H:%M:%S'`
+	echo "##########   查看日志： http://showlog.dev.qiancangkeji.cn/   ##########"
 }
 #错误信息
 error_info(){
-	printf "错误${jobname} \n"
+	printf "错误${jobname} !!!!!!!!!!!!!\n"
 	printf "%-16s %-16s %-16s\n" 项目 日期 时间
 	printf "%-16s %-16s %-16s\n" 错误$jobname `date '+%Y-%m-%d %H:%M:%S'`
 }
