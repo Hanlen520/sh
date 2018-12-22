@@ -9,7 +9,7 @@ whichone=$3
 #参数4参数：test / prod
 active=$4
 
-kill_foever(){
+kill_forever(){
 	job_pid=$(ps -ef | grep publish.sh | awk '{print $2}')
 	if [ ${job_pid} ]
 	then
@@ -17,6 +17,6 @@ kill_foever(){
 		sleep 5
 	fi
 }
-kill_foever
-
-sh /website/sh/publish.sh ${jobname} ${portnum} ${whichone} ${active} 
+kill_forever
+echo "开始部署"
+nohup sh /website/sh/publish.sh ${jobname} ${portnum} ${whichone} ${active}  > /website/sh/foever.out 2>&1 &
