@@ -14,6 +14,8 @@ success_info(){
 	printf "%-16s %-16s %-16s %-16s %-16s\n" 项目 端口 CASE 日期 时间
 	printf "%-16s %-16s %-16s %-16s %-16s\n" $jobname $portnum $whichone `date '+%Y-%m-%d %H:%M:%S'`
 	echo "##########   查看日志： http://showlog.dev.qiancangkeji.cn/   ##########"
+	echo "开始守护>>>>>>"
+	forever
 }
 #错误信息
 error_info(){
