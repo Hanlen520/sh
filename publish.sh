@@ -200,5 +200,6 @@ job_start(){
 }
 
 # 启动
+sleep 5
 job_start
 
