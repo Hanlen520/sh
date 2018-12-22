@@ -20,3 +20,4 @@ kill_forever(){
 kill_forever
 echo "开始部署"
 nohup sh /website/sh/publish.sh ${jobname} ${portnum} ${whichone} ${active}  > /website/sh/foever.out 2>&1 &
+tail -f /website/sh/foever.out
