@@ -24,23 +24,19 @@ error_info(){
 
 #文件管理
 file_manage(){
-	date_str=$(date +%Y%m%d-%H%M%S) && 
-	
 	#目录初始化，已存在则忽略，不存在则创建
-	mkdir -p /website/${whichone}/${jobname}
-	mkdir -p /website/backup/${jobname}/${date_str}
-	
-	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n已接收jenkins远程传输包：\n$(stat /website/jenkins/${jobname}/*.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-	
-	mv /website/${whichone}/${jobname}/* /website/backup/${jobname}/${date_str}/ &&
-	echo -e "1.旧版jar及日志备份，成功：\n`ls -l /website/backup/${jobname}/${date_str}/*`"
-	
-	cp /website/jenkins/${jobname}/*.jar /website/${whichone}/${jobname}/${jobname}.jar && 
-	echo "2.替换新版jar包，成功：/website/${whichone}/${jobname}/${jobname}.jar"
-	rm -rf /website/jenkins/${jobname}/*
+	mkdir -p ${job_dir}
+	mkdir -p ${backup_dir}/${date_str}
+	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n已接收jenkins远程传输包：\n$(stat ${jenkins_dir}/*.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
 
-	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n更新包信息:\n$(stat /website/$whichone/$jobname/$jobname.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
-
+	mv ${job_dir}/${jobname}.jar ${job_dir}/${active}-${jobname}-${date_str}.jar &&
+	mv ${job_dir}/${active}-${jobname}.out ${job_dir}/${active}-${jobname}-${date_str}.out &&
+	mv ${job_dir}/* ${backup_dir}/${date_str}/ &&
+	echo -e "1.旧版jar及日志备份，成功：\n"ls -l ${backup_dir}/${date_str}/"\n`ls -l ${backup_dir}/${date_str}/*`"
+	cp ${jenkins_dir}/*.jar ${job_dir}/${jobname}.jar && 
+	echo "2.替换新版jar包，成功：${job_dir}/${jobname}.jar"
+	rm -rf ${jenkins_dir}/*
+	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n更新包信息:\n$(stat ${job_dir}/$jobname.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
 	sleep 1
 }
 
@@ -57,7 +53,7 @@ kill_job(){
 			kill -9 $(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
 			sleep 3
 		done
-		echo "再杀一次，应返回：No such process！"
+		echo "再杀一次，应返回：“No such process！” 或 “没有那个进程” "
 		kill -9 $job_pid
 		sleep 2
 	else
@@ -69,45 +65,45 @@ kill_job(){
 run_job(){
 	case $jobname in
 	'cms')
-		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
+		echo "6.准备启动${job_dir}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
-		echo "nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
 		sleep 120
 	;;
 	'qc')
-		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
+		echo "6.准备启动${job_dir}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
-		echo "nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
 		sleep 120
 	;;
 	'wx')
-		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
+		echo "6.准备启动${job_dir}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
-		echo "nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
 		sleep 120
 	;;
 	'cloud'|'cloud-1'|'cloud-2')
-		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
+		echo "6.准备启动${job_dir}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
-		echo "nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
 		sleep 120
 	;;
 	'config'|'config-1'|'config-2')
-		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
+		echo "6.准备启动${job_dir}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
-		echo "nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > ${job_dir}/$active-$jobname.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > ${job_dir}/$active-$jobname.out 2>&1 &"
 		sleep 120
 	;;
 	'api'|'api-1'|'api-2')
-		echo "6.准备启动/website/${whichone}/${jobname}/${jobname}.jar，端口${portnum}"
+		echo "6.准备启动${job_dir}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &
-		echo "nohup /usr/local/java/jdk1.8.0_191/bin/java -jar /website/$whichone/$jobname/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > /website/$whichone/$jobname/$jobname-$active-$date_str.log 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
 		sleep 120
 	;;
 	*)
@@ -143,89 +139,41 @@ check_job(){
 	fi
 	
 }
+# cms前端静态文件替换 
 cmsweb(){
-# cms前端静态文件替换
-	date_str=$(date +%Y%m%d-%H%M%S) && 
-	echo -e "当前时间：`date` \n${date_str}\n1.接收构建包:\n$(stat /website/jenkins/cmsweb/dist.tar.gz)"
-	mv /website/${whichone}/cmsweb/dist /website/backup/cmsweb/dist-${date_str}
-	echo -e "2.备份旧版本信息：\n/website/backup/cmsweb/dist-${date_str}\n$(ls -l /website/backup/cmsweb/dist-${date_str})"
+	echo -e "当前时间：`date` \n${date_str}\n1.接收构建包:\n$(stat ${jenkins_dir}/dist.tar.gz)"
+	mv ${job_dir}/dist ${backup_dir}/dist-${date_str}
+	echo -e "2.备份旧版本信息：\n${backup_dir}/dist-${date_str}\n$(ls -l ${backup_dir}/dist-${date_str})"
 	echo -e "3.解压上线新版静态文件\n"
-	tar xzvf /website/jenkins/cmsweb/dist.tar.gz -C /website/${whichone}/cmsweb/
-	echo -e "4.查看目录确认\nls -l /website/${whichone}/cmsweb/dist\n$(ls -l /website/${whichone}/cmsweb/dist)"
+	tar xzvf ${jenkins_dir}/dist.tar.gz -C ${job_dir}/
+	echo -e "4.查看目录确认\nls -l ${job_dir}/dist\n$(ls -l ${job_dir}/dist)"
 }
-# cms后台
-cms(){
+# java项目
+java_job(){
     file_manage
 	kill_job
 	run_job
 	check_job
 	success_info
 }
-# qc服务
-qc(){
-	file_manage
-	kill_job
-	run_job
-	check_job
-	success_info
+# 初始化变量
+var_init(){
+	date_str=$(date +%Y%m%d-%H%M%S)
+	jenkins_dir=/website/jenkins/${jobname}
+	job_dir=/website/${whichone}/${jobname}
+	backup_dir=/website/backup/${jobname}
+	java_home=/usr/local/java/jdk1.8.0_191/bin/java
 }
-# 微信服务
-wx(){
-    file_manage
-	kill_job
-	run_job
-	check_job
-	success_info
-}
-# cloud注册中心
-cloud(){
-	file_manage
-	kill_job
-	run_job
-	check_job
-	success_info
-}
-# cloud注册中心
-config(){
-	file_manage
-	kill_job
-	run_job
-	check_job
-	success_info
-}
-# cloud注册中心
-api(){
-	file_manage
-	kill_job
-	run_job
-	check_job
-	success_info
-}
-
 #从这里开始
 job_start(){
+	var_init
 	printf "项目：${jobname}，端口：${portnum} \n"
 	case $jobname in
 	'cmsweb')
 		cmsweb
 	;;
-	'cms')
-		cms
-	;;
-	'qc')
-		qc
-	;;
-	'wx')
-		wx
-	;;
-	'cloud'|'cloud-1'|'cloud-2')
-		cloud
-	;;
-	'config'|'config-1'|'config-2')
-		config
-	;;
-	'api'|'api-1'|'api-2')
-		api
+	'cms'|'qc'|'wx'|'cloud'|'cloud-1'|'cloud-2'|'config'|'config-1'|'config-2'|'api'|'api-1'|'api-2')
+		java_job
 	;;
 	*)
 		error_info
