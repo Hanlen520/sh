@@ -1,4 +1,14 @@
 #!/bin/bash
+
+#参数1项目名：cms / qc / wx / cloud-1/2 / config-1/2 /api-1/2
+jobname=$1
+#参数2端口号：8500 / 8081 / 8600 / 8700 / 8888 / 8650
+portnum=$2
+#参数3分支：alpha / beta
+whichone=$3
+#参数4参数：test / prod
+active=$4
+
 kill_foever(){
 	job_pid=$(ps -ef | grep publish.sh | awk '{print $2}')
 	if [ ${job_pid} ]
@@ -8,3 +18,5 @@ kill_foever(){
 	fi
 }
 kill_foever
+
+sh /website/sh/publish.sh ${jobname} ${portnum} ${whichone} ${active} 
