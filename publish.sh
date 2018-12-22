@@ -85,21 +85,21 @@ run_job(){
 		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
 		sleep 120
 	;;
-	'cloud'|'cloud-1'|'cloud-2')
+	'cloud'|'cloud-1'|'cloud-2'|'cloud-3')
 		echo "6.准备启动${job_dir}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
 		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
 		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
 		sleep 120
 	;;
-	'config'|'config-1'|'config-2')
+	'config'|'config-1'|'config-2'|'config-3')
 		echo "6.准备启动${job_dir}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
 		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > ${job_dir}/$active-$jobname.out 2>&1 &
 		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > ${job_dir}/$active-$jobname.out 2>&1 &"
 		sleep 120
 	;;
-	'api'|'api-1'|'api-2')
+	'api'|'api-1'|'api-2'|'api-3')
 		echo "6.准备启动${job_dir}/${jobname}.jar，端口${portnum}"
 		date_str=$(date +%Y%m%d-%H%M%S)
 		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
@@ -137,8 +137,26 @@ check_job(){
 		run_job
 		check_job
 	fi
-	
 }
+
+# 端口守护
+forever(){
+	while true
+	do
+	sleep 300
+	date_str=$(date +%Y%m%d-%H%M%S)
+	# 获取端口的进程号
+	job_pid=$(netstat -ntlp | grep $port_num | awk '{print $7}' | awk -F"/" '{ print $1 }')
+	echo "${date_str}------------进程号${pid}---------------"
+	# 如果进程号为空，重启服务
+	if [ "${pid}"=="" ] 
+	then
+	echo "ERROR>>>>>>>>>>>>>>>>>>>>>检测不到端口，准备再次检测"
+	check_job
+	fi
+	done
+}
+
 # cms前端静态文件替换 
 cmsweb(){
 	echo -e "当前时间：`date` \n${date_str}\n1.接收构建包:\n$(stat ${jenkins_dir}/dist.tar.gz)"
@@ -172,7 +190,7 @@ job_start(){
 	'cmsweb')
 		cmsweb
 	;;
-	'cms'|'qc'|'wx'|'cloud'|'cloud-1'|'cloud-2'|'config'|'config-1'|'config-2'|'api'|'api-1'|'api-2')
+	'cms'|'qc'|'wx'|'cloud'|'cloud-1'|'cloud-2'|'cloud-3'|'config'|'config-1'|'config-2'|'config-3'|'api'|'api-1'|'api-2'|'api-3')
 		java_job
 	;;
 	*)
@@ -183,3 +201,4 @@ job_start(){
 
 # 启动
 job_start
+
