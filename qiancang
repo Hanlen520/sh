@@ -1,0 +1,13 @@
+# cd /etc/logrotate.d/
+/website/*/*/*.log /website/*/*/*.out {
+        daily                   #每天
+        #weekly                 #指定转储周期为每周
+        #monthly                        #指定转储周期为每月
+        nocreate                #不建立新的日志文件
+        #nocompress             #不压缩日志
+        compress                #通过gzip 压缩转储以后的日志
+        delaycompress   #和compress 一起使用时，转储的日志文件到下一次转储时才压缩
+        dateext                 #使用当期日期作为命名格式
+        copytruncate    #拷贝再清空的方式
+        notifempty              #为空时，不进行轮转
+}
