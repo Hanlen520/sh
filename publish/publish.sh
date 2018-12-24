@@ -210,6 +210,6 @@ JOB_START(){
 	esac
 }
 
-# 启动
+# 启动自动部署
 echo -e ">>>>>>>>>>开始远程自动部署"
 JOB_START
