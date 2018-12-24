@@ -2,7 +2,7 @@
 /website/*/*/*.log /website/*/*/*.out {
         daily                   #每天
         #weekly                 #指定转储周期为每周
-        #monthly                        #指定转储周期为每月
+        #monthly                #指定转储周期为每月
         nocreate                #不建立新的日志文件
         #nocompress             #不压缩日志
         compress                #通过gzip 压缩转储以后的日志
