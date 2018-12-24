@@ -101,4 +101,5 @@ FOREVER(){
 		fi
 	done
 }
+# 开启守护进程
 FOREVER
