@@ -18,47 +18,47 @@ VAR_INIT(){
 }
 # 日至备份
 LOG_BAK(){
-	echo "备份日志 ----- cp -rf ${job_dir}/$active-$jobname.out ${job_dir}/$active-$jobname-date_str.out"
-	cp -rf ${job_dir}/$active-$jobname.out ${job_dir}/$active-$jobname-date_str.out
+	echo "备份日志 ----- cp -rf ${job_dir}/${active}-${jobname}.out ${job_dir}/${active}-${jobname}-date_str.out"
+	cp -rf ${job_dir}/${active}-${jobname}.out ${job_dir}/${active}-${jobname}-date_str.out
 }
 # 启动进程
 RUN_JOB(){
 	echo "重新启动 ----- JAVA项目:${jobname}，使用端口:${portnum}，启动环境:${active}"
-	case $jobname in
+	case ${jobname} in
 	'cms')
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
-		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=127.0.0.1 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=127.0.0.1 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &"
 		sleep 120
 	;;
 	'qc') 
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
-		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=127.0.0.1 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=127.0.0.1 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &"
 		sleep 120
 	;;
 	'wx')
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
-		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=127.0.0.1 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=127.0.0.1 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &"
 		sleep 120
 	;;
 	'cloud'|'cloud-1'|'cloud-2'|'cloud-3')
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
-		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=0.0.0.0 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=0.0.0.0 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &"
 		sleep 120
 	;;
 	'config'|'config-1'|'config-2'|'config-3')
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > ${job_dir}/$active-$jobname.out 2>&1 &
-		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > ${job_dir}/$active-$jobname.out 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=0.0.0.0 --server.port=${portnum} --spring.profiles.active=${active},jdbc > ${job_dir}/${active}-${jobname}.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=0.0.0.0 --server.port=${portnum} --spring.profiles.active=${active},jdbc > ${job_dir}/${active}-${jobname}.out 2>&1 &"
 		sleep 120
 	;;
 	'api'|'api-1'|'api-2'|'api-3')
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
-		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=0.0.0.0 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=0.0.0.0 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &"
 		sleep 120
 	;;
 	*)
@@ -68,7 +68,7 @@ RUN_JOB(){
 }
 # 状态复查
 FOREVER_CHECK(){
-	job_pid=$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
+	job_pid=$(netstat -ntlp | grep ${portnum} | awk '{print $7}' | awk -F"/" '{ print $1 }')
 	job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
 	if [ ${job_pid} ];then
 		echo "=====JAVA项目${jobname}端口${portnum}所在PID${job_pid}已续存${job_etime}"
@@ -89,7 +89,7 @@ FOREVER(){
 		VAR_INIT
 		echo "${date_str} ----- 开始检测 >>>>>"
 		# 获取端口的进程号
-		job_pid=$(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
+		job_pid=$(netstat -ntlp | grep -v grep | grep ${portnum} | awk '{print $7}' | awk -F"/" '{ print $1 }')
 		job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
 		# 如果进程号为空，重启服务
 		if [ ${pid} ]; then

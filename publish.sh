@@ -32,17 +32,17 @@ SUCCESS_INFO(){
 	date_str=$(date +%Y-%m-%d__%H-%M-%S)
 	echo "${jobname}更新成功!!!!!!!!!!!!!"
 	printf "%-16s %-16s %-16s %-16s %-16s\n" 项目 端口 CASE 日期 时间
-	printf "%-16s %-16s %-16s %-16s %-16s\n" $jobname $portnum $whichone `date '+%Y-%m-%d %H:%M:%S'`
+	printf "%-16s %-16s %-16s %-16s %-16s\n" ${jobname} ${portnum} ${whichone} `date '+%Y-%m-%d %H:%M:%S'`
 	echo "##########   查看日志： http://showlog.dev.qiancangkeji.cn/   ##########"
 	echo "最后一步，备份守护进程日志，启动进程守护>>>>>>"
-	mv /website/sh/forever.out /website/sh/forever_${date_str}.out
+	mv /website/sh/forever.out /website/sh/forever-${date_str}.out
 	nohup sh /website/sh/forever.sh ${jobname} ${portnum} ${whichone} ${active} > /website/sh/forever.out 2>&1 &
 	echo -e " mv /website/sh/forever.out /website/sh/forever_${date_str}.out \n nohup sh /website/sh/forever.sh ${jobname} ${portnum} ${whichone} ${active} > /website/sh/forever.out 2>&1 &"
 }
 # 错误信息
 ERROR_INFO(){
 	printf "%-16s %-16s %-16s\n" 项目 日期 时间
-	printf "%-16s %-16s %-16s\n" 错误$jobname `date '+%Y-%m-%d %H:%M:%S'`
+	printf "%-16s %-16s %-16s\n" 错误${jobname} `date '+%Y-%m-%d %H:%M:%S'`
 	echo -e "错误${jobname} !!!!!!!!!!!!!\n检查启动参数\n参数1项目名：cms / qc / wx / cloud-1/2 / config-1/2 /api-1/2\n# 参数2端口号：8500 / 8081 / 8600 / 8700 / 8888 / 8650\n# 参数3分支：alpha / beta\n# 参数4参数：test / prod"
 }
 # 文件管理
@@ -54,13 +54,13 @@ FILE_MANAGE(){
 	echo -e "1.旧版jar及日志备份，成功：\n"ls -l ${backup_dir}/${date_str}/"\n`ls -l ${backup_dir}/${date_str}/*`"
 	cp ${jenkins_dir}/*.jar ${job_dir}/${jobname}.jar && rm -rf ${jenkins_dir}/*
 	echo -e "2.替换新版jar包，成功：${job_dir}/${jobname}.jar"
-	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n更新包信息:\n$(stat ${job_dir}/$jobname.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n更新包信息:\n$(stat ${job_dir}/${jobname}.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
 	sleep 1
 }
 # 杀死守护进程
 KILL_FOREVER(){
 	forever_pid=$(ps -ef | grep forever.sh | grep -v grep | grep ${jobname} | grep ${portnum} | grep ${whichone} | grep ${active} | awk '{print $2}')
-	forever_etime=$(ps -eo pid,lstart,etime | grep $forever_pid | awk '{print $7}')
+	forever_etime=$(ps -eo pid,lstart,etime | grep ${forever_pid} | awk '{print $7}')
 	if [ ${forever_pid} ]; then
 		echo -e "3.JAVA项目${jobname}存在守护进程PID${forever_pid}，已续存时间${forever_etime} \n-----验明正身，准备杀死-----"
 		while [ $(ps -ef | grep forever.sh | grep -v grep | grep ${jobname} | grep ${portnum} | grep ${whichone} | grep ${active} | awk '{print $2}') ]
@@ -69,7 +69,7 @@ KILL_FOREVER(){
 			sleep 3
 		done
 		echo -e "-----下一行返回：“No such process” 或 “没有那个进程”，则成功杀死守护进程 "
-		kill -9 $forever_pid
+		kill -9 ${forever_pid}
 		echo -e "-----进入下一步操作-----"
 	else
 		echo -e "3.JAVA项目${jobname}的守护进程$(ps -ef | grep forever.sh | grep ${jobname} | grep -v grep | awk '{print $2}')不存在，进入下一步操作"
@@ -81,62 +81,62 @@ KILL_FOREVER(){
 # 杀死JAVA进程
 KILL_JOB(){
 	# 检查端口号是否存在，存在则杀死
-	job_pid=$(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
+	job_pid=$(netstat -ntlp | grep -v grep | grep ${portnum} | awk '{print $7}' | awk -F"/" '{ print $1 }')
 	job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
 	if [ ${job_pid} ]; then
 		echo "4.JAVA项目${jobname}端口${portnum}已占用，PID${job_pid}已续存${job_etime}，准备杀死"
-		while [ $(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }') ]
+		while [ $(netstat -ntlp | grep -v grep | grep ${portnum} | awk '{print $7}' | awk -F"/" '{ print $1 }') ]
 		do
-			kill -9 $(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
+			kill -9 $(netstat -ntlp | grep -v grep | grep ${portnum} | awk '{print $7}' | awk -F"/" '{ print $1 }')
 			sleep 3
 		done
 		echo -e "-----下一行返回：“No such process” 或 “没有那个进程”，则成功杀死守护进程 "
-		kill -9 $job_pid
+		kill -9 ${job_pid}
 		echo -e "-----进入下一步操作-----"
 	else
-		echo -e "4.JAVA项目${jobname}的${portnum}端口未占用或已杀死，进程$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')不存在，进入下一步操作"
-		kill -9 $(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
+		echo -e "4.JAVA项目${jobname}的${portnum}端口未占用或已杀死，进程$(netstat -ntlp | grep ${portnum} | awk '{print $7}' | awk -F"/" '{ print $1 }')不存在，进入下一步操作"
+		kill -9 $(netstat -ntlp | grep -v grep | grep ${portnum} | awk '{print $7}' | awk -F"/" '{ print $1 }')
 	fi
 	sleep 2
 }
 # 启动进程
 RUN_JOB(){
 	echo "5.重新启动JAVA项目:${jobname}，使用端口:${portnum}，启动环境:${active}"
-	case $jobname in
+	case ${jobname} in
 	'cms')
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
-		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=127.0.0.1 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=127.0.0.1 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &"
 		sleep 120
 	;;
 	'qc') 
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
-		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=127.0.0.1 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=127.0.0.1 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &"
 		sleep 120
 	;;
 	'wx')
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
-		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=127.0.0.1 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=127.0.0.1 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &"
 		sleep 120
 	;;
 	'cloud'|'cloud-1'|'cloud-2'|'cloud-3')
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
-		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=0.0.0.0 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=0.0.0.0 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &"
 		sleep 120
 	;;
 	'config'|'config-1'|'config-2'|'config-3')
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > ${job_dir}/$active-$jobname.out 2>&1 &
-		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > ${job_dir}/$active-$jobname.out 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=0.0.0.0 --server.port=${portnum} --spring.profiles.active=${active},jdbc > ${job_dir}/${active}-${jobname}.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=0.0.0.0 --server.port=${portnum} --spring.profiles.active=${active},jdbc > ${job_dir}/${active}-${jobname}.out 2>&1 &"
 		sleep 120
 	;;
 	'api'|'api-1'|'api-2'|'api-3')
 		date_str=$(date +%Y%m%d-%H%M%S)
-		nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &
-		echo "nohup ${java_home} -jar ${job_dir}/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > ${job_dir}/$active-$jobname.out 2>&1 &"
+		nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=0.0.0.0 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &
+		echo "nohup ${java_home} -jar ${job_dir}/${jobname}.jar --server=0.0.0.0 --server.port=${portnum} --spring.profiles.active=${active} > ${job_dir}/${active}-${jobname}.out 2>&1 &"
 		sleep 120
 	;;
 	*)
@@ -147,7 +147,7 @@ RUN_JOB(){
 # 运行状态复查
 RUN_CHECK(){
 	echo "6.检测启动状态"
-	job_pid=$(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
+	job_pid=$(netstat -ntlp | grep -v grep | grep ${portnum} | awk '{print $7}' | awk -F"/" '{ print $1 }')
 	if [ ${job_pid} ]; then
 		job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
 		job_etime_array=(${job_etime//:/ })
@@ -197,7 +197,7 @@ JOB_START(){
 	# 变量初始化
 	VAR_INIT
 	# 根据项目区分
-	case $jobname in
+	case ${jobname} in
 	'cmsweb')
 		CMSWEB
 	;;
@@ -211,5 +211,5 @@ JOB_START(){
 }
 
 # 启动
-echo -e "开始远程自动部署"
+echo -e ">>>>>>>>>>开始远程自动部署"
 JOB_START
