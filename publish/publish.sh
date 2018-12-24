@@ -151,22 +151,22 @@ RUN_CHECK(){
 	job_pid=$(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
 	if test $job_pid
 	then
-	job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
-	job_etime_array=(${job_etime//:/ })
-	echo "-----检测到进程存在，PID是$job_pid，持续时间$job_etime-----"
-	if test ${job_etime_array[2]} ] || [ ${job_etime_array[0]} -gt 3
-	then
-	echo "-----存在旧版本进程没有杀死，重新杀死进程并重新启动...-----"
-	KILL_JOB
-	RUN_JOB
-	RUN_CHECK
+		job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
+		job_etime_array=(${job_etime//:/ })
+		echo "-----检测到进程存在，PID是$job_pid，持续时间$job_etime-----"
+		if [ ${job_etime_array[2]} ] || [ ${job_etime_array[0]} -gt 3 ]
+		then
+			echo "-----存在旧版本进程没有杀死，重新杀死进程并重新启动...-----"
+			KILL_JOB
+			RUN_JOB
+			RUN_CHECK
+		else
+			echo "-----检测完成，启动正确!-----"
+		fi
 	else
-	echo "-----检测完成，启动正确!-----"
-	fi
-	else
-	echo "-----端口$portnum未在监听，再次尝试启动进程...-----"
-	RUN_JOB
-	RUN_CHECK
+		echo "-----端口$portnum未在监听，再次尝试启动进程...-----"
+		RUN_JOB
+		RUN_CHECK
 	fi
 }
 # cms前端静态文件替换
