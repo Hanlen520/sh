@@ -1,5 +1,5 @@
 #!/bin/bash
-# 参数1项目名：cms / qc / wx / cloud-1/2 / config-1/2 /api-1/2
+# 参数1项目名：cms / service / wx / cloud-1/2 / config-1/2 /api-1/2
 jobname=$1
 # 参数2端口号：8500 / 8081 / 8600 / 8700 / 8888 / 8650
 portnum=$2
@@ -43,7 +43,7 @@ SUCCESS_INFO(){
 ERROR_INFO(){
 	printf "%-16s %-16s %-16s\n" 项目 日期 时间
 	printf "%-16s %-16s %-16s\n" 错误$jobname `date '+%Y-%m-%d %H:%M:%S'`
-	echo -e "错误$jobname !!!!!!!!!!!!!\n检查启动参数\n参数1项目名：cms / qc / wx / cloud-1/2 / config-1/2 /api-1/2\n# 参数2端口号：8500 / 8081 / 8600 / 8700 / 8888 / 8650\n# 参数3分支：alpha / beta\n# 参数4参数：test / prod"
+	echo -e "错误$jobname !!!!!!!!!!!!!\n检查启动参数\n参数1项目名：cms / service / wx / cloud-1/2 / config-1/2 /api-1/2\n# 参数2端口号：8500 / 8081 / 8600 / 8700 / 8888 / 8650\n# 参数3分支：alpha / beta\n# 参数4参数：test / prod"
 }
 # 文件管理
 FILE_MANAGE(){
@@ -119,7 +119,7 @@ RUN_JOB(){
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
 	sleep 120
 	;;
-	'qc')
+	'service')
 	date_str=$(date +%Y%m%d-%H%M%S)
 	nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
@@ -159,7 +159,7 @@ LOG_BAK(){
 	echo "备份日志 - - - - - cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-date_str.out"
 	if [ -f "$job_dir/$active-$jobname.out" ]
 	then
-		cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-date_str.out
+		cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-$date_str.out
 	fi
 }
 # 运行状态复查
@@ -227,7 +227,7 @@ JOB_START(){
 	'cmsweb')
 	CMSWEB
 	;;
-	'cms'|'qc'|'wx'|'cloud'|'cloud-1'|'cloud-2'|'cloud-3'|'config'|'config-1'|'config-2'|'config-3'|'api'|'api-1'|'api-2'|'api-3')
+	'cms'|'service'|'wx'|'cloud'|'cloud-1'|'cloud-2'|'cloud-3'|'config'|'config-1'|'config-2'|'config-3'|'api'|'api-1'|'api-2'|'api-3')
 	JAVA_JOB
 	;;
 	*)

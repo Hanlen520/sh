@@ -21,7 +21,7 @@ LOG_BAK(){
 	echo "备份日志 - - - - - cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-date_str.out"
 	if [ -f "$job_dir/$active-$jobname.out" ]
 	then
-		cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-date_str.out
+		cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-$date_str.out
 	fi
 }
 # 启动进程
