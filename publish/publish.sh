@@ -16,13 +16,13 @@ VAR_INIT(){
 	backup_dir=/website/backup/$jobname
 	java_home=/usr/local/java/jdk1.8.0_191/bin/java
 	ip_local=$(ifconfig eth0 | grep "inet" | awk '{ print $2}')
-	echo -e "--------------------变量初始化--------------------"
-	echo -e "----------时    间：$date_str \n "
-	echo -e "----------接收目录：$jenkins_dir \n "
-	echo -e "----------工作目录：$job_dir \n "
-	echo -e "----------备份目录：$backup_dir \n "
-	echo -e "----------JAVAHOME：$java_home \n "
-	echo -e "----------内网IP：$ip_local \n "
+	echo -e "- - - - - - - - - - - - - - - - - - - -  变量初始化 - - - - - - - - - - - - - - - - - - - - "
+	echo -e "- - - - - - - - - -  时    间：$date_str \n "
+	echo -e "- - - - - - - - - -  接收目录：$jenkins_dir \n "
+	echo -e "- - - - - - - - - -  工作目录：$job_dir \n "
+	echo -e "- - - - - - - - - -  备份目录：$backup_dir \n "
+	echo -e "- - - - - - - - - -  JAVAHOME：$java_home \n "
+	echo -e "- - - - - - - - - -  内网IP：$ip_local \n "
 	#目录初始化，已存在则忽略，不存在则创建
 	mkdir -p $job_dir
 	mkdir -p $backup_dir/$date_str
@@ -47,7 +47,7 @@ ERROR_INFO(){
 }
 # 文件管理
 FILE_MANAGE(){
-	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n已接收jenkins远程传输包：\n$(stat $jenkins_dir/*.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n已接收jenkins远程传输包：\n$(stat $jenkins_dir/*.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 	mv $job_dir/$jobname.jar $job_dir/$active-$jobname-$date_str.jar &&
 	mv $job_dir/$active-$jobname.out $job_dir/$active-$jobname-$date_str.out &&
 	mv $job_dir/* $backup_dir/$date_str/ &&
@@ -57,21 +57,22 @@ FILE_MANAGE(){
 	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n更新包信息:\n$(stat $job_dir/$jobname.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
 	sleep 1
 }
+
 # 杀死守护进程
 KILL_FOREVER(){
 	forever_pid=$(ps -ef | grep forever.sh | grep -v grep | grep $jobname | grep $portnum | grep $whichone | grep $active | awk '{print $2}')
 	forever_etime=$(ps -eo pid,lstart,etime | grep $forever_pid | awk '{print $7}')
 	if [ $forever_pid ]
 	then
-		echo -e "3.JAVA项目$jobname存在守护进程PID$forever_pid，已续存时间$forever_etime \n-----验明正身，准备杀死-----"
+		echo -e "3.JAVA项目$jobname存在守护进程PID$forever_pid，已续存时间$forever_etime \n- - - - - 验明正身，准备杀死- - - - - "
 		while [ $(ps -ef | grep forever.sh | grep -v grep | grep $jobname | grep $portnum | grep $whichone | grep $active | awk '{print $2}') ]
 		do
 			kill -9 $(ps -ef | grep forever.sh | grep -v grep | grep $jobname | grep $portnum | grep $whichone | grep $active | awk '{print $2}')
 			sleep 3
 		done
-		echo -e "-----下一行返回：“No such process” 或 “没有那个进程”，则成功杀死守护进程 "
-		kill -9 $forever_pid
-		echo -e "-----进入下一步操作-----"
+		echo -e "- - - - -  下一行返回：“No such process” 或 “没有那个进程”，则成功杀死守护进程 "
+		kill -9 $(ps -ef | grep forever.sh | grep -v grep | grep $jobname | grep $portnum | grep $whichone | grep $active | awk '{print $2}')
+		echo -e "- - - - -  进入下一步操作 - - - - - "
 	else
 		echo -e "3.JAVA项目$jobname的守护进程$(ps -ef | grep forever.sh | grep $jobname | grep -v grep | awk '{print $2}')不存在，进入下一步操作"
 		kill -9 $(ps -ef | grep forever.sh | grep -v grep | grep $jobname | grep $portnum | grep $whichone | grep $active | awk '{print $2}')
@@ -86,23 +87,31 @@ KILL_JOB(){
 	if [ $job_pid ]
 	then
 		echo "4.JAVA项目$jobname端口$portnum已占用，PID$job_pid已续存$job_etime，准备杀死"
+		# 检查端口占用进程，存在则杀死
 		while [ $(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }') ]
 		do
 			kill -9 $(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
 			sleep 3
 		done
-		echo -e "-----下一行返回：“No such process” 或 “没有那个进程”，则成功杀死守护进程 "
-		kill -9 $job_pid
-		echo -e "-----进入下一步操作-----"
+		# 检查未占用端口但存在的进程，存在则依次杀死
+		while [ $(ps -ef | grep -v grep | grep java | grep $jobname | grep $portnum | grep $active | head -n 1 | awk '{print $2}') ]
+		do
+			kill -9 $(ps -ef | grep -v grep | grep java | grep $jobname | grep $portnum | grep $active | head -n 1 | awk '{print $2}')
+			sleep 3
+		done
+		# 最后再杀一次，提示进程不存在，则确认杀死无误
+		echo -e "- - - - -  下一行返回：“No such process” 或 “没有那个进程”，则成功杀死守护进程 "
+		kill -9 $(ps -ef | grep -v grep | grep java | grep $jobname | grep $portnum | grep $active | head -n 1 | awk '{print $2}')
+		sleep 2
+		echo -e "- - - - -  进入下一步操作 - - - - - "
 	else
 		echo -e "4.JAVA项目$jobname的$portnum端口未占用或已杀死，进程$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')不存在，进入下一步操作"
-		kill -9 $(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
+		kill -9 $(ps -ef | grep -v grep | grep java | grep $jobname | grep $portnum | grep $active | head -n 1 | awk '{print $2}')
 	fi
 	sleep 2
 }
 # 启动进程
 RUN_JOB(){
-	echo "5.重新启动JAVA项目:$jobname，使用端口:$portnum，启动环境:$active"
 	case $jobname in
 	'cms')
 	date_str=$(date +%Y%m%d-%H%M%S)
@@ -145,6 +154,14 @@ RUN_JOB(){
 	;;
 	esac
 }
+# 日至备份
+LOG_BAK(){
+	echo "备份日志 - - - - - cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-date_str.out"
+	if [ -f "$job_dir/$active-$jobname.out" ]
+	then
+		cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-date_str.out
+	fi
+}
 # 运行状态复查
 RUN_CHECK(){
 	echo "6.检测启动状态"
@@ -153,18 +170,23 @@ RUN_CHECK(){
 	then
 		job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
 		job_etime_array=(${job_etime//:/ })
-		echo "-----检测到进程存在，PID是$job_pid，持续时间$job_etime-----"
+		echo "- - - - - 检测到进程存在，PID是$job_pid，持续时间$job_etime - - - - - "
 		if [ ${job_etime_array[2]} ] || [ ${job_etime_array[0]} -gt 3 ]
 		then
-			echo "-----存在旧版本进程没有杀死，重新杀死进程并重新启动...-----"
+			echo "- - - - - 存在旧版本进程没有杀死，重新杀死进程并重新启动... - - - - - "
 			KILL_JOB
+			echo "重启启动JAVA项目:$jobname，使用端口:$portnum，启动环境:$active"
+			LOG_BAK
 			RUN_JOB
+			echo "再次检查JAVA项目:$jobname，使用端口:$portnum，启动环境:$active"
 			RUN_CHECK
 		else
-			echo "-----检测完成，启动正确!-----"
+			echo "- - - - - 检测完成，启动正确! - - - - -"
 		fi
 	else
-		echo "-----端口$portnum未在监听，再次尝试启动进程...-----"
+		echo "- - - - - 端口$portnum未在监听，再次尝试启动进程... - - - - - "
+		echo "重启启动JAVA项目:$jobname，使用端口:$portnum，启动环境:$active"
+		LOG_BAK
 		RUN_JOB
 		RUN_CHECK
 	fi
@@ -188,6 +210,7 @@ JAVA_JOB(){
 	# 杀死java项目进程
 	KILL_JOB
 	# 启动java项目
+	echo "5.启动JAVA项目:$jobname，使用端口:$portnum，启动环境:$active"
 	RUN_JOB
 	# 检查启动状态
 	RUN_CHECK
@@ -214,6 +237,6 @@ JOB_START(){
 }
 
 # 启动自动部署
-echo -e ">>>>>>>>>>开始远程自动部署"
+echo -e ">>>>>>>>>> 开始远程自动部署"
 JOB_START
 

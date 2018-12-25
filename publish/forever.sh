@@ -1,7 +1,7 @@
 #!/bin/bash
-#参数1项目名：cms / qc / wx / cloud-1/2 / config-1/2 /api-1/2
+#参数1项目名：cms / qc / wx / cloud-1/2/3 / config-1/2/3 /api-1/2/3 message-1/2
 jobname=$1
-#参数2端口号：8500 / 8081 / 8600 / 8700 / 8888 / 8650
+#参数2端口号：8500 / 8081 / 8600 / 8700 / 8888 / 8650 / 8350
 portnum=$2
 #参数3分支：alpha / beta
 whichone=$3
@@ -18,12 +18,15 @@ VAR_INIT(){
 }
 # 日至备份
 LOG_BAK(){
-	echo "备份日志 ----- cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-date_str.out"
-	cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-date_str.out
+	echo "备份日志 - - - - - cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-date_str.out"
+	if [ -f "$job_dir/$active-$jobname.out" ]
+	then
+		cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-date_str.out
+	fi
 }
 # 启动进程
 RUN_JOB(){
-	echo "重新启动 ----- JAVA项目:$jobname，使用端口:$portnum，启动环境:$active"
+	echo "重新启动 - - - - - JAVA项目:$jobname，使用端口:$portnum，启动环境:$active"
 	case $jobname in
 	'cms')
 	date_str=$(date +%Y%m%d-%H%M%S)
@@ -71,8 +74,8 @@ FOREVER_CHECK(){
 	job_pid=$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
 	job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
 	if [ $job_pid ];then
-		echo "=====JAVA项目$jobname端口$portnum所在PID$job_pid已续存$job_etime"
-		echo "$date_str ----- 检测完成，启动正确，180 s 后再次轮询 <<<<<"
+		echo "===== JAVA项目$jobname端口$portnum所在PID$job_pid已续存$job_etime"
+		echo "$date_str - - - - - 检测完成，启动正确，180 s 后再次轮询 <<<<<"
 	else
 		echo "端口$portnum未监听，备份日志，准备尝试启动进程..."
 		LOG_BAK
@@ -82,22 +85,22 @@ FOREVER_CHECK(){
 }
 # 端口守护
 FOREVER(){
-	echo "-----守护进程启动...守护项目$jobname...守护端口$portnum...启动分支$whichone...启动环境$active... 180 s 后第一次检测-----"
+	echo "- - - - -守护进程启动...守护项目$jobname...守护端口$portnum...启动分支$whichone...启动环境$active... 180 s 后第一次检测- - - - -"
 	while true
 	do
 		sleep 180
 		VAR_INIT
-		echo "$date_str ----- 开始检测 >>>>>"
+		echo "$date_str - - - - - 开始检测 >>>>>"
 		# 获取端口的进程号
 		job_pid=$(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
 		job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
 		# 如果进程号为空，重启服务
 		if [ $pid ]
 		then
-			echo "=====JAVA项目$jobname端口$portnum所在PID$job_pid已续存$job_etime"
-			echo "$date_str ----- 检测完成，启动正确，180 s 后再次轮询 <<<<<"
+			echo "===== JAVA项目$jobname端口$portnum所在PID$job_pid已续存$job_etime"
+			echo "$date_str - - - - - 检测完成，启动正确，180 s 后再次轮询 <<<<<"
 		else
-			echo "ERROR--!--!--$date_str-----检测不到JAVA项目$jobname的端口$portnum，准备再次检测确认"
+			echo "ERROR--!--!--$date_str- - - - -检测不到JAVA项目$jobname的端口$portnum，准备再次检测确认"
 			FOREVER_CHECK
 		fi
 	done
