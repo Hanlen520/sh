@@ -198,6 +198,7 @@ RUN_CHECK(){
 	else
 		echo "- - - - - 端口$portnum未在监听，再次尝试启动进程... - - - - - "
 		echo "重启启动JAVA项目:$jobname，使用端口:$portnum，启动环境:$active"
+		KILL_JOB
 		LOG_BAK
 		RUN_JOB
 		RUN_CHECK
