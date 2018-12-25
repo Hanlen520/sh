@@ -74,8 +74,8 @@ FOREVER_CHECK(){
 	job_pid=$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
 	job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
 	if [ $job_pid ];then
-		echo "===== JAVA项目$jobname端口$portnum所在PID$job_pid已续存$job_etime"
-		echo "$date_str - - - - - 检测完成，启动正确，180 s 后再次轮询 <<<<<"
+		echo -e "===== JAVA项目$jobname端口$portnum所在PID$job_pid已续存$job_etime"
+		echo -e "$date_str - - - - - 检测完成，启动正确，180 s 后再次轮询 <<<<<\n"
 	else
 		echo "端口$portnum未监听，备份日志，准备尝试启动进程..."
 		LOG_BAK
@@ -95,12 +95,12 @@ FOREVER(){
 		job_pid=$(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
 		job_etime=$(ps -eo pid,lstart,etime | grep $job_pid | awk '{print $7}')
 		# 如果进程号为空，重启服务
-		if [ $pid ]
+		if [ $job_pid ]
 		then
-			echo "===== JAVA项目$jobname端口$portnum所在PID$job_pid已续存$job_etime"
-			echo "$date_str - - - - - 检测完成，启动正确，180 s 后再次轮询 <<<<<"
+			echo -e "===== JAVA项目$jobname端口$portnum所在PID$job_pid已续存$job_etime"
+			echo -e "$date_str - - - - - 检测完成，启动正确，180 s 后再次轮询 <<<<<\n"
 		else
-			echo "ERROR--!--!--$date_str- - - - -检测不到JAVA项目$jobname的端口$portnum，准备再次检测确认"
+			echo -e "ERROR--!--!--$date_str- - - - -检测不到JAVA项目$jobname的端口$portnum，准备再次检测确认"
 			FOREVER_CHECK
 		fi
 	done
