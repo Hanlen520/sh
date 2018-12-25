@@ -28,40 +28,52 @@ LOG_BAK(){
 RUN_JOB(){
 	echo "重新启动 - - - - - JAVA项目:$jobname，使用端口:$portnum，启动环境:$active"
 	case $jobname in
-	'cms')
-	date_str=$(date +%Y%m%d-%H%M%S)
-	nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
-	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
-	sleep 120
-	;;
-	'service')
-	date_str=$(date +%Y%m%d-%H%M%S)
-	nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
-	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
-	sleep 120
-	;;
-	'wx')
-	date_str=$(date +%Y%m%d-%H%M%S)
-	nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
-	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
-	sleep 120
-	;;
-	'cloud'|'cloud-1'|'cloud-2'|'cloud-3')
+	'cloud'*)
 	date_str=$(date +%Y%m%d-%H%M%S)
 	nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
 	sleep 120
 	;;
-	'config'|'config-1'|'config-2'|'config-3')
+	'config'*)
 	date_str=$(date +%Y%m%d-%H%M%S)
 	nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > $job_dir/$active-$jobname.out 2>&1 &
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > $job_dir/$active-$jobname.out 2>&1 &"
 	sleep 120
 	;;
-	'api'|'api-1'|'api-2'|'api-3')
+	'admin'*)
 	date_str=$(date +%Y%m%d-%H%M%S)
 	nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
+	sleep 120
+	;;
+	'message'*)
+	date_str=$(date +%Y%m%d-%H%M%S)
+	nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
+	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
+	sleep 120
+	;;
+	'api'*)
+	date_str=$(date +%Y%m%d-%H%M%S)
+	nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
+	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
+	sleep 120
+	;;
+	'service'*)
+	date_str=$(date +%Y%m%d-%H%M%S)
+	nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
+	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
+	sleep 120
+	;;
+	'cms'*)
+	date_str=$(date +%Y%m%d-%H%M%S)
+	nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
+	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
+	sleep 120
+	;;
+	'wx'*)
+	date_str=$(date +%Y%m%d-%H%M%S)
+	nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
+	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
 	sleep 120
 	;;
 	*)
