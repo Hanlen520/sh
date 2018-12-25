@@ -35,9 +35,9 @@ SUCCESS_INFO(){
 	printf "%-16s %-16s %-16s %-16s %-16s\n" $jobname $portnum $whichone `date '+%Y-%m-%d %H:%M:%S'`
 	echo "##########   查看日志： http://showlog.dev.qiancangkeji.cn/   ##########"
 	echo "最后一步，备份守护进程日志，启动进程守护>>>>>>"
-	mv /website/sh/forever.out /website/sh/forever-$date_str.out
-	nohup sh /website/sh/forever.sh $jobname $portnum $whichone $active > /website/sh/forever.out 2>&1 &
-	echo -e " mv /website/sh/forever.out /website/sh/forever_$date_str.out \n nohup sh /website/sh/forever.sh $jobname $portnum $whichone $active > /website/sh/forever.out 2>&1 &"
+	mv /website/sh/$jobname-forever.out /website/sh/$jobname-forever-$date_str.out
+	nohup sh /website/sh/forever.sh $jobname $portnum $whichone $active > /website/sh/$jobname-forever.out 2>&1 &
+	echo -e " mv /website/sh/$jobname-forever.out /website/sh/$jobname-forever-$date_str.out \n nohup sh /website/sh/forever.sh $jobname $portnum $whichone $active > /website/sh/$jobname-forever.out 2>&1 &"
 }
 # 错误信息
 ERROR_INFO(){
