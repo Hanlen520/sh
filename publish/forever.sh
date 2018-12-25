@@ -1,5 +1,5 @@
 #!/bin/bash
-#参数1项目名：cms / qc / wx / cloud-1/2/3 / config-1/2/3 /api-1/2/3 message-1/2
+#参数1项目名：cms / service / wx / cloud-1/2/3 / config-1/2/3 /api-1/2/3 message-1/2
 jobname=$1
 #参数2端口号：8500 / 8081 / 8600 / 8700 / 8888 / 8650 / 8350
 portnum=$2
@@ -34,7 +34,7 @@ RUN_JOB(){
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
 	sleep 120
 	;;
-	'qc')
+	'service')
 	date_str=$(date +%Y%m%d-%H%M%S)
 	nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
