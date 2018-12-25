@@ -1,7 +1,7 @@
 #!/bin/bash
 # 参数1项目名：1cloud-1/2 / 2config-1/2 / 3admin / 4message / 5api-1/2 / 6service /cms / wx / 
 jobname=$1
-# 参数2端口号：8500 / 8081 / 8600 / 8700 / 8888 / 8650
+# 参数2端口号：8700 / 8888 / 8300 / 8350 / 8650 / 8081 / 8500 / 8600
 portnum=$2
 # 参数3分支：alpha / beta
 whichone=$3
@@ -43,7 +43,7 @@ SUCCESS_INFO(){
 ERROR_INFO(){
 	printf "%-16s %-16s %-16s\n" 项目 日期 时间
 	printf "%-16s %-16s %-16s\n" 错误$jobname `date '+%Y-%m-%d %H:%M:%S'`
-	echo -e "错误$jobname !!!!!!!!!!!!!\n检查启动参数\n参数1项目名：cms / service / wx / cloud-1/2 / config-1/2 /api-1/2\n# 参数2端口号：8500 / 8081 / 8600 / 8700 / 8888 / 8650\n# 参数3分支：alpha / beta\n# 参数4参数：test / prod"
+	echo -e "错误$jobname !!!!!!!!!!!!!\n检查启动参数\n参数1项目名：1cloud-1/2 / 2config-1/2 / 3admin / 4message / 5api-1/2 / 6service /cms / wx / \n# 参数2端口号：8700 / 8888 / 8300 / 8350 / 8650 / 8081 / 8500 / 8600\n# 参数3分支：alpha / beta\n# 参数4参数：test / prod"
 }
 # 文件管理
 FILE_MANAGE(){
