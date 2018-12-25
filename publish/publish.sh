@@ -54,7 +54,7 @@ FILE_MANAGE(){
 	echo -e "1.旧版jar及日志备份，成功：\n"ls -l $backup_dir/$date_str/"\n`ls -l $backup_dir/$date_str/*`"
 	cp $jenkins_dir/*.jar $job_dir/$jobname.jar && rm -rf $jenkins_dir/*
 	echo -e "2.替换新版jar包，成功：$job_dir/$jobname.jar"
-	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n更新包信息:\n$(stat $job_dir/$jobname.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+	echo -e "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n更新包信息:\n$(stat $job_dir/$jobname.jar)\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 	sleep 1
 }
 
