@@ -35,8 +35,8 @@ SUCCESS_INFO(){
 	printf "%-16s %-16s %-16s %-16s %-16s\n" $jobname $portnum $whichone `date '+%Y-%m-%d %H:%M:%S'`
 	echo "##########   查看日志： http://showlog.dev.qiancangkeji.cn/   ##########"
 	echo "最后一步，备份守护进程日志，启动进程守护>>>>>>"
-	mv /website/sh/$jobname-forever.out /website/sh/$jobname-forever-$date_str.out
-	nohup sh /website/sh/forever.sh $jobname $portnum $whichone $active > /website/sh/$jobname-forever.out 2>&1 &
+	mv /$job_dir/$jobname-forever.out /$job_dir/$jobname-forever-$date_str.out
+	nohup sh /website/sh/forever.sh $jobname $portnum $whichone $active > /$job_dir/$jobname-forever.out 2>&1 &
 	echo -e " mv /website/sh/$jobname-forever.out /website/sh/$jobname-forever-$date_str.out \n nohup sh /website/sh/forever.sh $jobname $portnum $whichone $active > /website/sh/$jobname-forever.out 2>&1 &"
 }
 # 错误信息
@@ -67,17 +67,17 @@ KILL_FOREVER(){
 		echo -e "3.JAVA项目$jobname存在守护进程PID$forever_pid，已续存时间$forever_etime \n- - - - - 验明正身，准备杀死- - - - - "
 		while [ $(ps -ef | grep forever.sh | grep -v grep | grep $jobname | grep $portnum | grep $whichone | grep $active | awk '{print $2}') ]
 		do
-			kill -9 $(ps -ef | grep forever.sh | grep -v grep | grep $jobname | grep $portnum | grep $whichone | grep $active | awk '{print $2}')
-			sleep 3
+			kill -15 $(ps -ef | grep forever.sh | grep -v grep | grep $jobname | grep $portnum | grep $whichone | grep $active | awk '{print $2}')
+			sleep 5
 		done
 		echo -e "- - - - -  下一行返回：“No such process” 或 “没有那个进程”，则成功杀死守护进程 "
-		kill -9 $(ps -ef | grep forever.sh | grep -v grep | grep $jobname | grep $portnum | grep $whichone | grep $active | awk '{print $2}')
+		kill -15 $(ps -ef | grep forever.sh | grep -v grep | grep $jobname | grep $portnum | grep $whichone | grep $active | awk '{print $2}')
 		echo -e "- - - - -  进入下一步操作 - - - - - "
 	else
 		echo -e "3.JAVA项目$jobname的守护进程$(ps -ef | grep forever.sh | grep $jobname | grep -v grep | awk '{print $2}')不存在，进入下一步操作"
-		kill -9 $(ps -ef | grep forever.sh | grep -v grep | grep $jobname | grep $portnum | grep $whichone | grep $active | awk '{print $2}')
+		kill -15 $(ps -ef | grep forever.sh | grep -v grep | grep $jobname | grep $portnum | grep $whichone | grep $active | awk '{print $2}')
 	fi
-	sleep 2
+	sleep 5
 }
 # 杀死JAVA进程
 KILL_JOB(){
@@ -90,25 +90,25 @@ KILL_JOB(){
 		# 检查端口占用进程，存在则杀死
 		while [ $(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }') ]
 		do
-			kill -9 $(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
-			sleep 3
+			kill -15 $(netstat -ntlp | grep -v grep | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')
+			sleep 10
 		done
 		# 检查未占用端口但存在的进程，存在则依次杀死
 		while [ $(ps -ef | grep -v grep | grep java | grep $jobname | grep $portnum | grep $active | head -n 1 | awk '{print $2}') ]
 		do
-			kill -9 $(ps -ef | grep -v grep | grep java | grep $jobname | grep $portnum | grep $active | head -n 1 | awk '{print $2}')
-			sleep 3
+			kill -15 $(ps -ef | grep -v grep | grep java | grep $jobname | grep $portnum | grep $active | head -n 1 | awk '{print $2}')
+			sleep 10
 		done
 		# 最后再杀一次，提示进程不存在，则确认杀死无误
 		echo -e "- - - - -  下一行返回：“No such process” 或 “没有那个进程”，则成功杀死守护进程 "
-		kill -9 $(ps -ef | grep -v grep | grep java | grep $jobname | grep $portnum | grep $active | head -n 1 | awk '{print $2}')
-		sleep 2
+		kill -15 $(ps -ef | grep -v grep | grep java | grep $jobname | grep $portnum | grep $active | head -n 1 | awk '{print $2}')
+		sleep 5
 		echo -e "- - - - -  进入下一步操作 - - - - - "
 	else
 		echo -e "4.JAVA项目$jobname的$portnum端口未占用或已杀死，进程$(netstat -ntlp | grep $portnum | awk '{print $7}' | awk -F"/" '{ print $1 }')不存在，进入下一步操作"
-		kill -9 $(ps -ef | grep -v grep | grep java | grep $jobname | grep $portnum | grep $active | head -n 1 | awk '{print $2}')
+		kill -15 $(ps -ef | grep -v grep | grep java | grep $jobname | grep $portnum | grep $active | head -n 1 | awk '{print $2}')
 	fi
-	sleep 2
+	sleep 5
 }
 # 启动进程
 RUN_JOB(){
@@ -117,49 +117,49 @@ RUN_JOB(){
 	date_str=$(date +%Y%m%d-%H%M%S)
 	nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
-	sleep 120
+	sleep 130
 	;;
 	'config'*)
 	date_str=$(date +%Y%m%d-%H%M%S)
 	nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > $job_dir/$active-$jobname.out 2>&1 &
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active,jdbc > $job_dir/$active-$jobname.out 2>&1 &"
-	sleep 120
+	sleep 130
 	;;
 	'admin'*)
 	date_str=$(date +%Y%m%d-%H%M%S)
 	nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
-	sleep 120
+	sleep 130
 	;;
 	'message'*)
 	date_str=$(date +%Y%m%d-%H%M%S)
 	nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
-	sleep 120
+	sleep 130
 	;;
 	'api'*)
 	date_str=$(date +%Y%m%d-%H%M%S)
 	nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=0.0.0.0 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
-	sleep 120
+	sleep 130
 	;;
 	'service'*)
 	date_str=$(date +%Y%m%d-%H%M%S)
 	nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
-	sleep 120
+	sleep 130
 	;;
 	'cms'*)
 	date_str=$(date +%Y%m%d-%H%M%S)
 	nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
-	sleep 120
+	sleep 130
 	;;
 	'wx'*)
 	date_str=$(date +%Y%m%d-%H%M%S)
 	nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &
 	echo "nohup $java_home -jar $job_dir/$jobname.jar --server=127.0.0.1 --server.port=$portnum --spring.profiles.active=$active > $job_dir/$active-$jobname.out 2>&1 &"
-	sleep 120
+	sleep 130
 	;;
 	*)
 	ERROR_INFO
@@ -168,7 +168,7 @@ RUN_JOB(){
 }
 # 日至备份
 LOG_BAK(){
-	echo "备份日志 - - - - - cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-date_str.out"
+	echo "备份日志 - - - - - cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-$date_str.out"
 	if [ -f "$job_dir/$active-$jobname.out" ]
 	then
 		cp -rf $job_dir/$active-$jobname.out $job_dir/$active-$jobname-$date_str.out
